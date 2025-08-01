@@ -1,4 +1,4 @@
-layer_id,mandatory,name
-101,,Service Circuit
-102,,Ethernet
-103,,Physical
+layer_id,name,mandatory
+101,Service Circuit,Y
+102,Ethernet,Y
+103,Physical,Y

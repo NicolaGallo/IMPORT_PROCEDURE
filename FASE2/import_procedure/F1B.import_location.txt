@@ -1,14 +1,18 @@
+// ========================================
+// IMPORT LOCATIONS WITH NAME AS PRIMARY KEY
+// ========================================
+
 CALL apoc.periodic.iterate(
   "LOAD CSV WITH HEADERS FROM 'file:///locations.csv' AS row RETURN row",
   "
-  // Crea Location con coordinate
-  MERGE (l:Location {location_id: toInteger(row.location_id)})
-  SET l.name = row.name,
+  // Crea Location con nome come chiave primaria
+  MERGE (l:Location {name: row.name})
+  SET l.location_id = toInteger(row.location_id),
       l.latitude = toFloat(row.latitude),
       l.longitude = toFloat(row.longitude),
       l.point = 'POINT(' + row.longitude + ' ' + row.latitude + ')'
   
-  RETURN l.location_id
+  RETURN l.name AS location_created
   ",
   {
     batchSize: 10000,
@@ -19,10 +23,9 @@ CALL apoc.periodic.iterate(
 );
 
 // ========================================
-// 3. AGGIUNGI LOCATIONS AL LAYER SPAZIALE (solo se non già presenti)
+// AGGIUNGI LOCATIONS AL LAYER SPAZIALE
 // ========================================
 
-// Aggiungi al layer spaziale solo le location che non hanno già le proprietà spaziali
 MATCH (l:Location)
 WHERE l.bbox IS NULL AND l.gtype IS NULL
 CALL spatial.addNode('locations', l) YIELD node

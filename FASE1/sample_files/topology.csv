@@ -1,4 +1,4 @@
-createdAt,createdBy,description,modifiedBy,name,topology_id,updatedAt
-"2025-06-24T10:20:56Z",administrator,"Topology principale di produzione",administrator,Topology_Production,319,"2025-06-24T10:21:56Z"
-"2025-06-23T14:15:30Z",admin_user,"Topology di test per sviluppo",admin_user,Topology_Development,320,"2025-06-23T15:00:00Z"
-"2025-06-22T09:30:45Z",system_admin,"Topology per ambiente di staging",system_admin,Topology_Staging,321,"2025-06-22T10:15:20Z"
+topology_id,name,description,createdAt,updatedAt,createdBy,modifiedBy
+1,Core_Network,"Core network topology for main infrastructure",2024-01-15T10:00:00,2024-01-15T10:00:00,admin,admin
+2,Access_Network,"Access network topology for customer connections",2024-01-15T11:00:00,2024-01-15T11:00:00,admin,admin
+3,Transport_Network,"Transport network topology for backbone",2024-01-15T12:00:00,2024-01-15T12:00:00,admin,admin

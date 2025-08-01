@@ -1,5 +1,5 @@
 // ========================================
-// CREAZIONE INDICI PER GLI ID
+// CREAZIONE INDICI PER GLI ID E NOMI
 // ========================================
 
 // 1. INDEX PER TOPOLOGY_ID (Unique)
@@ -23,25 +23,37 @@ FOR (a:Account)
 REQUIRE a.account_id IS UNIQUE;
 
 // ========================================
-// INDICI NON-UNIQUE PER PERFORMANCE
+// CONSTRAINT PER NOMI COME CHIAVI UNIVOCHE
 // ========================================
 
-// 5. INDEX PER NOMI (per ricerche per nome)
-CREATE INDEX topology_name_index 
+// 5. NOMI UNIVOCI PER OGNI ENTITÀ
+CREATE CONSTRAINT topology_name_unique 
 FOR (t:Topology) 
-ON (t.name);
+REQUIRE t.name IS UNIQUE;
 
-CREATE INDEX layer_name_index 
+CREATE CONSTRAINT layer_name_unique 
 FOR (l:Layer) 
-ON (l.name);
+REQUIRE l.name IS UNIQUE;
 
-CREATE INDEX itemtype_name_index 
+CREATE CONSTRAINT itemtype_name_unique 
 FOR (it:ItemType) 
-ON (it.itemTypeName);
+REQUIRE it.itemTypeName IS UNIQUE;
 
-CREATE INDEX account_name_index 
+CREATE CONSTRAINT account_name_unique 
 FOR (a:Account) 
-ON (a.account_name);
+REQUIRE a.account_name IS UNIQUE;
+
+CREATE CONSTRAINT ciitem_name_unique 
+FOR (ci:CiItem) 
+REQUIRE ci.name IS UNIQUE;
+
+CREATE CONSTRAINT location_name_unique 
+FOR (loc:Location) 
+REQUIRE loc.name IS UNIQUE;
+
+// ========================================
+// INDICI NON-UNIQUE PER PERFORMANCE
+// ========================================
 
 // 6. INDEX PER DEFAULT_LAYER (per join tra ItemType e Layer)
 CREATE INDEX itemtype_defaultlayer_index 
@@ -57,6 +69,32 @@ CREATE INDEX topology_updatedat_index
 FOR (t:Topology) 
 ON (t.updatedAt);
 
+// 8. INDICI PER CIITEM
+CREATE INDEX ciitem_itemtype_index 
+FOR (ci:CiItem) 
+ON (ci.itemTypeId);
+
+CREATE INDEX ciitem_status_index 
+FOR (ci:CiItem) 
+ON (ci.status);
+
+CREATE INDEX ciitem_account_index 
+FOR (ci:CiItem) 
+ON (ci.accountId);
+
+CREATE INDEX ciitem_importance_index 
+FOR (ci:CiItem) 
+ON (ci.importance);
+
+CREATE INDEX ciitem_coordinates_index 
+FOR (ci:CiItem) 
+ON (ci.latitude, ci.longitude);
+
+// 9. INDICI PER LOCATION
+CREATE INDEX location_coordinates_index 
+FOR (loc:Location) 
+ON (loc.latitude, loc.longitude);
+
 // ========================================
 // VERIFICA INDICI CREATI
 // ========================================
@@ -66,23 +104,3 @@ SHOW INDEXES;
 
 // Mostra tutti i constraints
 SHOW CONSTRAINTS;
-
-// ========================================
-// SCRIPT DI PULIZIA (OPZIONALE)
-// ========================================
-
-// ATTENZIONE: Usa solo se devi rimuovere gli indici
-/*
-DROP CONSTRAINT topology_id_unique;
-DROP CONSTRAINT layer_id_unique;
-DROP CONSTRAINT itemtype_id_unique;
-DROP CONSTRAINT account_id_unique;
-
-DROP INDEX topology_name_index;
-DROP INDEX layer_name_index;
-DROP INDEX itemtype_name_index;
-DROP INDEX account_name_index;
-DROP INDEX itemtype_defaultlayer_index;
-DROP INDEX topology_createdat_index;
-DROP INDEX topology_updatedat_index;
-*/

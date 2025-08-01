@@ -1,7 +1,6 @@
 location_id,name,latitude,longitude
-1,"Rome Data Center 1",41.9028,12.4964
-2,"Rome Office North",41.9150,12.5100
-3,"Rome Office South",41.8900,12.4800
-4,"Milan Branch",45.4642,9.1900
-5,"Naples Regional Hub",40.8518,14.2681
-6,"Florence Service Point",43.7696,11.2558
+1,Milano_Centro,45.4642,9.1900
+2,Roma_EUR,41.8311,12.4686
+3,Napoli_Centro,40.8518,14.2681
+4,Torino_Centro,45.0703,7.6869
+5,Bologna_Centro,44.4949,11.3426

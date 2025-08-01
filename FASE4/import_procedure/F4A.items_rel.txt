@@ -1,13 +1,13 @@
 // ========================================
-// F3. IMPORT RELAZIONI CIITEM -> CIITEM
+// F4A. RELAZIONI CIITEM -> CIITEM (BY NAME)
 // ========================================
 
 CALL apoc.periodic.iterate(
   "LOAD CSV WITH HEADERS FROM 'file:///ciitem_rel.csv' AS row RETURN row",
   "
-  // Trova CiItem source e target
-  MATCH (source:CiItem {item_id: toInteger(row.source_id)})
-  MATCH (target:CiItem {item_id: toInteger(row.target_id)})
+  // Trova CiItem source e target usando i NOMI
+  MATCH (source:CiItem {name: row.source_name})
+  MATCH (target:CiItem {name: row.target_name})
   
   // Crea relazione con tipo specificato nel CSV
   CALL apoc.create.relationship(source, row.relation, {}, target) YIELD rel
@@ -21,4 +21,3 @@ CALL apoc.periodic.iterate(
     retries: 10
   }
 );
-

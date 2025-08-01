@@ -6,8 +6,8 @@ CALL apoc.periodic.iterate(
   "LOAD CSV WITH HEADERS FROM 'file:///layer_hierarchy.csv' AS row RETURN row",
   "
   // Trova Layer parent e child
-  MATCH (parent:Layer {layer_id: toInteger(row.parent_layer_id)})
-  MATCH (child:Layer {layer_id: toInteger(row.child_layer_id)})
+  MATCH (parent:Layer {name: row.parent_layer_name})
+  MATCH (child:Layer {name: row.child_layer_name})
   
   // Crea relazione IS_PARENT_OF
   MERGE (parent)-[:IS_PARENT_OF]->(child)
