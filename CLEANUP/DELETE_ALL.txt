@@ -1,0 +1,8 @@
+
+//DELETE ENTIRE GRAPH (node + releation)
+//MATCH (n) DETACH DELETE n
+
+//OR
+
+//DELETE RELATIONS ONLY
+//MATCH ()-[r]->() DELETE r;

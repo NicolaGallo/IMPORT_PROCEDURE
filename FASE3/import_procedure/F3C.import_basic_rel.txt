@@ -1,0 +1,76 @@
+// ========================================
+// FASE 2 - IMPORT RELAZIONI DA CSV SPECIFICI
+// ========================================
+
+// ========================================
+// 1. IMPORT RELAZIONI LAYER -> CIITEM
+// ========================================
+
+CALL apoc.periodic.iterate(
+  "LOAD CSV WITH HEADERS FROM 'file:///layer_rel.csv' AS row RETURN row",
+  "
+  // Trova Layer e CiItem
+  MATCH (l:Layer {layer_id: toInteger(row.layer_id)})
+  MATCH (ci:CiItem {item_id: toInteger(row.ciitem_id)})
+  
+  // Crea relazione IS_LAYER_OF
+  MERGE (l)-[:IS_LAYER_OF]->(ci)
+  
+  RETURN l.name + ' -> ' + ci.name AS relation_created
+  ",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);
+
+// ========================================
+// 2. IMPORT RELAZIONI TOPOLOGY -> CIITEM
+// ========================================
+
+CALL apoc.periodic.iterate(
+  "LOAD CSV WITH HEADERS FROM 'file:///topology_rel.csv' AS row RETURN row",
+  "
+  // Trova Topology e CiItem
+  MATCH (t:Topology {topology_id: toInteger(row.topology_id)})
+  MATCH (ci:CiItem {item_id: toInteger(row.ciitem_id)})
+  
+  // Crea relazione HAS_ELEMENT
+  MERGE (t)-[:HAS_ELEMENT]->(ci)
+  
+  RETURN t.name + ' -> ' + ci.name AS relation_created
+  ",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);
+
+// ========================================
+// 3. IMPORT RELAZIONI LOCATION -> CIITEM
+// ========================================
+
+CALL apoc.periodic.iterate(
+  "LOAD CSV WITH HEADERS FROM 'file:///location_rel.csv' AS row RETURN row",
+  "
+  // Trova Location e CiItem
+  MATCH (loc:Location {location_id: toInteger(row.location_id)})
+  MATCH (ci:CiItem {item_id: toInteger(row.ciitem_id)})
+  
+  // Crea relazione IS_LOCATION_OF
+  MERGE (loc)-[:IS_LOCATION_OF]->(ci)
+  
+  RETURN loc.name + ' -> ' + ci.name AS relation_created
+  ",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);
+

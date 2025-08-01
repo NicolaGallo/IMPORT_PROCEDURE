@@ -1,0 +1,118 @@
+// ========================================
+// FASE 2 IMPORT CI ITEMS 
+// ========================================
+
+CALL apoc.periodic.iterate(
+  "LOAD CSV WITH HEADERS FROM 'file:///ciItems.csv' AS row RETURN row",
+  "
+  // 1. GESTIONE ITEMTYPE
+  
+  // Estrai e pulisci valori ItemType
+  WITH row,
+       CASE 
+         WHEN row.itemTypeId IS NOT NULL AND row.itemTypeId <> '' AND row.itemTypeId <> 'NULL'
+         THEN toInteger(row.itemTypeId) 
+         ELSE NULL 
+       END AS providedTypeId,
+       CASE 
+         WHEN row.itemTypeName IS NOT NULL AND row.itemTypeName <> '' AND row.itemTypeName <> 'NULL'
+         THEN row.itemTypeName 
+         ELSE NULL 
+       END AS providedTypeName
+  
+  // Cerca ItemType esistente per ID
+  OPTIONAL MATCH (existingById:ItemType {itemTypeId: providedTypeId})
+  
+  // Cerca ItemType esistente per Nome
+  OPTIONAL MATCH (existingByName:ItemType {itemTypeName: providedTypeName})
+  
+  // Determina ItemType finale e ID/Nome da usare
+  WITH row, providedTypeId, providedTypeName, existingById, existingByName,
+       CASE
+         WHEN existingById IS NOT NULL THEN existingById.itemTypeId
+         WHEN existingByName IS NOT NULL THEN existingByName.itemTypeId
+         WHEN providedTypeId IS NOT NULL THEN providedTypeId
+         ELSE NULL
+       END AS finalTypeId,
+       CASE
+         WHEN existingById IS NOT NULL THEN existingById.itemTypeName
+         WHEN existingByName IS NOT NULL THEN existingByName.itemTypeName
+         WHEN providedTypeName IS NOT NULL THEN providedTypeName
+         ELSE 'Generic_Item'
+       END AS finalTypeName
+  
+  // Calcola ID sequenziale se necessario
+  WITH row, providedTypeId, providedTypeName, finalTypeId, finalTypeName
+  CALL {
+    WITH finalTypeId
+    OPTIONAL MATCH (it:ItemType)
+    WITH coalesce(max(it.itemTypeId), 0) + 1 AS calculatedId, finalTypeId
+    RETURN CASE WHEN finalTypeId IS NULL THEN calculatedId ELSE finalTypeId END AS newTypeId
+  }
+  
+  // Crea/aggiorna ItemType
+  MERGE (itemType:ItemType {itemTypeId: newTypeId})
+  ON CREATE SET itemType.itemTypeName = finalTypeName,
+                itemType.defaultLayer = 101
+  ON MATCH SET itemType.itemTypeName = finalTypeName
+  
+  // 2. GESTIONE ACCOUNT
+  
+  WITH row, newTypeId, finalTypeName, itemType,
+       CASE 
+         WHEN row.accountId IS NOT NULL AND row.accountId <> '' AND row.accountId <> 'NULL'
+         THEN toInteger(row.accountId) 
+         ELSE 9999
+       END AS finalAccountId
+  
+  // Crea Account se non esiste
+  MERGE (account:Account {account_id: finalAccountId})
+  ON CREATE SET account.account_name = CASE 
+    WHEN finalAccountId = 9999 THEN 'Default Account'
+    ELSE 'Account_' + toString(finalAccountId)
+  END
+  
+  // 3. CREA CI ITEM
+  
+  MERGE (ci:CiItem {item_id: toInteger(row.item_id)})
+  SET ci.itemTypeId = newTypeId,
+      ci.itemTypeName = finalTypeName,
+	  ci.name = row.name,
+      ci.status = row.status,
+      ci.accountId = finalAccountId,
+      ci.importance = row.importance,
+      ci.isLink =  row.isLink ,
+      ci.fromElement = CASE WHEN row.fromElement IS NOT NULL AND row.fromElement <> '' THEN toInteger(row.fromElement) ELSE NULL END,
+      ci.toElement = CASE WHEN row.toElement IS NOT NULL AND row.toElement <> '' THEN toInteger(row.toElement) ELSE NULL END,
+      ci.latitude = CASE WHEN row.latitude IS NOT NULL AND row.latitude <> '' THEN toFloat(row.latitude) ELSE NULL END,
+      ci.longitude = CASE WHEN row.longitude IS NOT NULL AND row.longitude <> '' THEN toFloat(row.longitude) ELSE NULL END,
+      ci.itemIcon = row.itemIcon,
+      ci.style = row.style,
+      ci.url = row.url
+  
+  // 4. GESTIONE PROPRIETÀ DINAMICHE
+  
+  WITH ci, row,
+       [k IN keys(row) WHERE k STARTS WITH 'propKey_' AND row[k] IS NOT NULL AND row[k] <> '' AND row[k] <> 'NULL'] AS dynKeys
+  
+  WITH ci, row, dynKeys,
+       [k IN dynKeys | row[k]] AS keysList,
+       [k IN dynKeys | row['propVal_' + replace(k, 'propKey_', '')]] AS valsList
+  
+  // Applica proprietà dinamiche se presenti
+  CALL apoc.do.when(
+    size(keysList) > 0,
+    'CALL apoc.create.setProperties(ci, keysList, valsList) YIELD node RETURN node',
+    'RETURN ci AS node',
+    {ci: ci, keysList: keysList, valsList: valsList}
+  ) YIELD value
+  
+  RETURN ci.item_id AS processed_item
+  ",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);

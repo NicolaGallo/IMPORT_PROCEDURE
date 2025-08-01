@@ -1,0 +1,2 @@
+// SETUP SPAZIALE FASE 0 (eseguire una sola volta prima dell'import Location)
+CALL spatial.addWKTLayer('locations', 'point');

@@ -1,0 +1,45 @@
+// ========================================
+// SCRIPT DI PULIZIA (OPZIONALE)
+// ========================================
+
+// ATTENZIONE: Usa solo se devi rimuovere gli indici
+/*
+DROP CONSTRAINT topology_id_unique;
+DROP CONSTRAINT layer_id_unique;
+DROP CONSTRAINT itemtype_id_unique;
+DROP CONSTRAINT account_id_unique;
+
+DROP INDEX topology_name_index;
+DROP INDEX layer_name_index;
+DROP INDEX itemtype_name_index;
+DROP INDEX account_name_index;
+DROP INDEX itemtype_defaultlayer_index;
+DROP INDEX topology_createdat_index;
+DROP INDEX topology_updatedat_index;
+*/
+
+
+
+// ========================================
+// SCRIPT DI PULIZIA FASE 2 (OPZIONALE)
+// ========================================
+
+// ATTENZIONE: Usa solo se devi rimuovere gli indici
+/*
+DROP CONSTRAINT ciitem_id_unique;
+DROP CONSTRAINT location_id_unique;
+
+DROP INDEX ciitem_itemtype_index;
+DROP INDEX ciitem_status_index;
+DROP INDEX ciitem_account_index;
+DROP INDEX ciitem_importance_index;
+DROP INDEX ciitem_islink_index;
+DROP INDEX ciitem_fromelement_index;
+DROP INDEX ciitem_toelement_index;
+DROP INDEX ciitem_coordinates_index;
+DROP INDEX location_name_index;
+DROP INDEX location_coordinates_index;
+DROP INDEX location_point_index;
+DROP INDEX ciitem_active_by_type_index;
+DROP INDEX ciitem_link_analysis_index;
+*/

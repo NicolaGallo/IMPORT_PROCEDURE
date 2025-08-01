@@ -1,0 +1,62 @@
+// ========================================
+// FASE 1 IMPORT - basic
+// ========================================
+
+// 1. IMPORT TOPOLOGY
+CALL apoc.periodic.iterate(
+  "LOAD CSV WITH HEADERS FROM 'file:///topology.csv' AS row RETURN row",
+  "MERGE (t:Topology {topology_id: toInteger(row.topology_id)})
+   SET t.name = row.name,
+       t.description = row.description,
+       t.createdAt = datetime(row.createdAt),
+       t.updatedAt = datetime(row.updatedAt),
+       t.createdBy = row.createdBy,
+       t.modifiedBy = row.modifiedBy",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);
+
+// 2. IMPORT LAYER
+CALL apoc.periodic.iterate(
+  "LOAD CSV WITH HEADERS FROM 'file:///layer.csv' AS row RETURN row",
+  "MERGE (l:Layer {layer_id: toInteger(row.layer_id)})
+   SET l.name = row.name,
+       l.mandatory = row.mandatory",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);
+
+// 3. IMPORT ITEM TYPE
+CALL apoc.periodic.iterate(
+  "LOAD CSV WITH HEADERS FROM 'file:///itemType.csv' AS row RETURN row",
+  "MERGE (it:ItemType {itemTypeId: toInteger(row.itemTypeId)})
+   SET it.itemTypeName = row.itemTypeName,
+       it.defaultLayer = toInteger(row.defaultLayer)",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);
+
+// 4. IMPORT ACCOUNT
+CALL apoc.periodic.iterate(
+  "LOAD CSV WITH HEADERS FROM 'file:///account.csv' AS row RETURN row",
+  "MERGE (a:Account {account_id: toInteger(row.account_id)})
+   SET a.account_name = row.account_name",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);

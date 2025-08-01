@@ -1,0 +1,88 @@
+// ========================================
+// CREAZIONE INDICI PER GLI ID
+// ========================================
+
+// 1. INDEX PER TOPOLOGY_ID (Unique)
+CREATE CONSTRAINT topology_id_unique 
+FOR (t:Topology) 
+REQUIRE t.topology_id IS UNIQUE;
+
+// 2. INDEX PER LAYER_ID (Unique)
+CREATE CONSTRAINT layer_id_unique 
+FOR (l:Layer) 
+REQUIRE l.layer_id IS UNIQUE;
+
+// 3. INDEX PER ITEM_TYPE_ID (Unique)
+CREATE CONSTRAINT itemtype_id_unique 
+FOR (it:ItemType) 
+REQUIRE it.itemTypeId IS UNIQUE;
+
+// 4. INDEX PER ACCOUNT_ID (Unique)
+CREATE CONSTRAINT account_id_unique 
+FOR (a:Account) 
+REQUIRE a.account_id IS UNIQUE;
+
+// ========================================
+// INDICI NON-UNIQUE PER PERFORMANCE
+// ========================================
+
+// 5. INDEX PER NOMI (per ricerche per nome)
+CREATE INDEX topology_name_index 
+FOR (t:Topology) 
+ON (t.name);
+
+CREATE INDEX layer_name_index 
+FOR (l:Layer) 
+ON (l.name);
+
+CREATE INDEX itemtype_name_index 
+FOR (it:ItemType) 
+ON (it.itemTypeName);
+
+CREATE INDEX account_name_index 
+FOR (a:Account) 
+ON (a.account_name);
+
+// 6. INDEX PER DEFAULT_LAYER (per join tra ItemType e Layer)
+CREATE INDEX itemtype_defaultlayer_index 
+FOR (it:ItemType) 
+ON (it.defaultLayer);
+
+// 7. INDEX PER DATE (per query temporali su Topology)
+CREATE INDEX topology_createdat_index 
+FOR (t:Topology) 
+ON (t.createdAt);
+
+CREATE INDEX topology_updatedat_index 
+FOR (t:Topology) 
+ON (t.updatedAt);
+
+// ========================================
+// VERIFICA INDICI CREATI
+// ========================================
+
+// Mostra tutti gli indici
+SHOW INDEXES;
+
+// Mostra tutti i constraints
+SHOW CONSTRAINTS;
+
+// ========================================
+// SCRIPT DI PULIZIA (OPZIONALE)
+// ========================================
+
+// ATTENZIONE: Usa solo se devi rimuovere gli indici
+/*
+DROP CONSTRAINT topology_id_unique;
+DROP CONSTRAINT layer_id_unique;
+DROP CONSTRAINT itemtype_id_unique;
+DROP CONSTRAINT account_id_unique;
+
+DROP INDEX topology_name_index;
+DROP INDEX layer_name_index;
+DROP INDEX itemtype_name_index;
+DROP INDEX account_name_index;
+DROP INDEX itemtype_defaultlayer_index;
+DROP INDEX topology_createdat_index;
+DROP INDEX topology_updatedat_index;
+*/

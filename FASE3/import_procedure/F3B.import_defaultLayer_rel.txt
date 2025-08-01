@@ -1,0 +1,21 @@
+CALL apoc.periodic.iterate(
+  "
+  // Query per trovare tutti i CiItem che devono essere collegati ai Layer
+  MATCH (ci:CiItem)
+  MATCH (it:ItemType {itemTypeId: ci.itemTypeId})
+  MATCH (l:Layer {layer_id: it.defaultLayer})
+  WHERE NOT exists((l)-[:IS_LAYER_OF]->(ci))
+  RETURN l, ci
+  ",
+  "
+  // Crea la relazione IS_LAYER_OF
+  CREATE (l)-[:IS_LAYER_OF]->(ci)
+  RETURN l.name + ' -> ' + toString(ci.item_id) as relation_created
+  ",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);
