@@ -1,5 +1,5 @@
 // ========================================
-// FASE 2 IMPORT CI ITEMS - VERSIONE FUNZIONANTE
+// FASE 2 IMPORT CI ITEMS
 // ========================================
 
 CALL apoc.periodic.iterate(
@@ -60,14 +60,16 @@ CALL apoc.periodic.iterate(
       ci.style = row.style,
       ci.url = row.url
   
-  // 4. GESTIONE PROPRIETÀ DINAMICHE (versione semplificata)
+  // 4. GESTIONE PROPRIETÀ DINAMICHE (VERSIONE CORRETTA CON NUMERI PROGRESSIVI)
   
   WITH ci, row,
-       [k IN keys(row) WHERE k STARTS WITH 'propKey_' AND row[k] IS NOT NULL AND row[k] <> '' AND row[k] <> 'NULL'] AS dynKeys
+       // Trova tutte le colonne propKey_N dove N è un numero
+       [k IN keys(row) WHERE k STARTS WITH 'propKey_' AND k =~ 'propKey_[0-9]+' AND row[k] IS NOT NULL AND row[k] <> '' AND row[k] <> 'NULL'] AS dynKeys
   
   WITH ci, row, dynKeys,
        [k IN dynKeys | row[k]] AS keysList,
-       [k IN dynKeys | row['propVal_' + replace(k, 'propKey_', '')]] AS valsList
+       // Estrai il numero da propKey_N e costruisci propVal_N
+       [k IN dynKeys | row['propVal_' + substring(k, 8)]] AS valsList
   
   // Applica proprietà dinamiche usando apoc.create.setProperties se ci sono chiavi
   WITH ci, keysList, valsList
