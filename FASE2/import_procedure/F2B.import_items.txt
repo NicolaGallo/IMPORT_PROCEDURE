@@ -1,44 +1,55 @@
 // ========================================
-// FASE 2 IMPORT CI ITEMS (NAME-BASED KEYS)
+// FASE 2 IMPORT CI ITEMS - VERSIONE FUNZIONANTE
 // ========================================
 
 CALL apoc.periodic.iterate(
   "LOAD CSV WITH HEADERS FROM 'file:///ciItems.csv' AS row RETURN row",
   "
-  // 1. GESTIONE ITEMTYPE (SOLO PER NOME)
+  // 1. GESTIONE ITEMTYPE
   
-  // Estrai e pulisci nome ItemType
+  // Pulisci e determina valori finali
   WITH row,
+       CASE 
+         WHEN row.itemTypeId IS NOT NULL AND row.itemTypeId <> '' AND row.itemTypeId <> 'NULL'
+         THEN toInteger(row.itemTypeId) 
+         ELSE 999
+       END AS finalTypeId,
        CASE 
          WHEN row.itemTypeName IS NOT NULL AND row.itemTypeName <> '' AND row.itemTypeName <> 'NULL'
          THEN row.itemTypeName 
          ELSE 'Generic_Item'
        END AS finalTypeName
   
-  // Cerca/Crea ItemType per Nome
+  // Crea/aggiorna ItemType usando SOLO il nome come chiave primaria
   MERGE (itemType:ItemType {itemTypeName: finalTypeName})
-  ON CREATE SET itemType.itemTypeId = toInteger(apoc.atomic.add({}, 'itemTypeCounter', 1, 5))
+  ON CREATE SET itemType.itemTypeId = finalTypeId,
+                itemType.defaultLayer = '101'
+  // Non settare itemTypeId in ON MATCH per evitare conflitti con constraint
   
-  // 2. GESTIONE ACCOUNT (SOLO PER NOME)
+  // 2. GESTIONE ACCOUNT
   
-  WITH row, finalTypeName, itemType,
+  WITH row, finalTypeId, finalTypeName,
        CASE 
-         WHEN row.accountName IS NOT NULL AND row.accountName <> '' AND row.accountName <> 'NULL'
-         THEN row.accountName 
-         ELSE 'Default Account'
-       END AS finalAccountName
+         WHEN row.accountId IS NOT NULL AND row.accountId <> '' AND row.accountId <> 'NULL'
+         THEN toInteger(row.accountId) 
+         ELSE 9999
+       END AS finalAccountId
   
-  // Cerca/Crea Account per Nome
-  MERGE (account:Account {account_name: finalAccountName})
-  ON CREATE SET account.account_id = toInteger(apoc.atomic.add({}, 'accountCounter', 1, 5))
+  // Crea Account usando il nome come chiave primaria
+  MERGE (account:Account {account_name: CASE 
+    WHEN finalAccountId = 9999 THEN 'Default Account'
+    ELSE 'Account_' + toString(finalAccountId)
+  END})
+  ON CREATE SET account.account_id = finalAccountId
   
   // 3. CREA CI ITEM
   
   MERGE (ci:CiItem {item_id: toInteger(row.item_id)})
-  SET ci.itemTypeName = finalTypeName,
+  SET ci.itemTypeId = finalTypeId,
+      ci.itemTypeName = finalTypeName,
       ci.name = row.name,
       ci.status = row.status,
-      ci.accountName = finalAccountName,
+      ci.accountId = finalAccountId,
       ci.importance = row.importance,
       ci.isLink = row.isLink,
       ci.fromElement = CASE WHEN row.fromElement IS NOT NULL AND row.fromElement <> '' THEN toInteger(row.fromElement) ELSE NULL END,
@@ -49,7 +60,7 @@ CALL apoc.periodic.iterate(
       ci.style = row.style,
       ci.url = row.url
   
-  // 4. GESTIONE PROPRIETÀ DINAMICHE
+  // 4. GESTIONE PROPRIETÀ DINAMICHE (versione semplificata)
   
   WITH ci, row,
        [k IN keys(row) WHERE k STARTS WITH 'propKey_' AND row[k] IS NOT NULL AND row[k] <> '' AND row[k] <> 'NULL'] AS dynKeys
@@ -58,20 +69,21 @@ CALL apoc.periodic.iterate(
        [k IN dynKeys | row[k]] AS keysList,
        [k IN dynKeys | row['propVal_' + replace(k, 'propKey_', '')]] AS valsList
   
-  // Applica proprietà dinamiche se presenti
+  // Applica proprietà dinamiche usando apoc.create.setProperties se ci sono chiavi
+  WITH ci, keysList, valsList
   CALL apoc.do.when(
     size(keysList) > 0,
-    'CALL apoc.create.setProperties(ci, keysList, valsList) YIELD node RETURN node',
-    'RETURN ci AS node',
-    {ci: ci, keysList: keysList, valsList: valsList}
+    'CALL apoc.create.setProperties($ci, $keys, $vals) YIELD node RETURN node',
+    'RETURN $ci AS node',
+    {ci: ci, keys: keysList, vals: valsList}
   ) YIELD value
   
   RETURN ci.item_id AS processed_item
   ",
   {
-    batchSize: 10000,
+    batchSize: 5000,
     parallel: false,
-    concurrency: 5,
-    retries: 10
+    concurrency: 3,
+    retries: 5
   }
 );

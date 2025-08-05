@@ -1,7 +1,7 @@
-itemTypeId,itemTypeName,defaultLayer
-1,GE,Ethernet
-2,PEIP,Service Circuit
-3,SWRT,Physical
-4,BTSGUL,Physical
-5,Router,Physical
-6,Switch,Ethernet
+itemTypeName,defaultLayer
+GE,Ethernet
+PEIP,Service Circuit
+SWRT,Physical
+BTSGUL,Physical
+Router,Physical
+Switch,Ethernet
