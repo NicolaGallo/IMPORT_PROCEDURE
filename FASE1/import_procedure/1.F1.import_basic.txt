@@ -1,0 +1,76 @@
+// ========================================
+// FASE 1 IMPORT - BASIC (WITH NAME UNIQUENESS)
+// ========================================
+
+// 1. IMPORT TOPOLOGY
+//CALL apoc.periodic.iterate(
+//  "LOAD CSV WITH HEADERS FROM 'file:///topology.csv' AS row RETURN row",
+//  "MERGE (t:Topology {name: row.name})
+//   SET t.topology_id = toInteger(row.topology_id),
+//       t.description = row.description,
+//       t.createdAt = datetime(row.createdAt),
+//       t.updatedAt = datetime(row.updatedAt),
+//       t.createdBy = row.createdBy,
+//       t.modifiedBy = row.modifiedBy",
+//  {
+//    batchSize: 10000,
+//   parallel: false,
+//  concurrency: 5,
+//    retries: 10
+//  }
+//);
+
+// 2. IMPORT LAYER
+CALL apoc.periodic.iterate(
+  "LOAD CSV WITH HEADERS FROM 'file:///layer.csv' AS row RETURN row",
+  "MERGE (l:Layer {name: row.name})
+   SET l.layer_id = toInteger(row.layer_id),
+       l.mandatory = row.mandatory",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);
+
+// 3. IMPORT ITEM TYPE 
+CALL apoc.periodic.iterate(
+  "LOAD CSV WITH HEADERS FROM 'file:///itemType.csv' AS row RETURN row",
+  "
+  // Parse defaultLayer field - handle both single and multi-value
+  WITH row,
+       CASE 
+         WHEN row.defaultLayer CONTAINS ';' 
+         THEN split(row.defaultLayer, ';')
+         ELSE [row.defaultLayer]
+       END AS defaultLayers
+  
+  // Create ItemType with defaultLayer as comma-separated string for storage
+  MERGE (it:ItemType {itemTypeName: row.itemTypeName})
+  SET it.itemTypeId = toInteger(row.itemTypeId),
+      it.defaultLayer = row.defaultLayer,
+      it.defaultLayers = defaultLayers  // Store as array for easier processing
+  
+  RETURN it.itemTypeName AS created_itemtype
+  ",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);
+
+// 4. IMPORT ACCOUNT
+CALL apoc.periodic.iterate(
+  "LOAD CSV WITH HEADERS FROM 'file:///account.csv' AS row RETURN row",
+  "MERGE (a:Account {account_name: row.account_name})
+   SET a.account_id = toInteger(row.account_id)",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);

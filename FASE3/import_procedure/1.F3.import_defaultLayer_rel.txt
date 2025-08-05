@@ -1,0 +1,42 @@
+// ========================================
+// F3B - IMPORT DEFAULT LAYER RELATIONS (MULTI-VALUE SUPPORT)
+// ========================================
+
+CALL apoc.periodic.iterate(
+  "
+  // Query to find all CiItems that need to be connected to their default Layers
+  MATCH (ci:CiItem)
+  MATCH (it:ItemType {itemTypeName: ci.itemTypeName})
+  
+  // Parse defaultLayers - handle both single and multi-value cases
+  WITH ci, it,
+       CASE 
+         WHEN it.defaultLayer CONTAINS ';' 
+         THEN split(it.defaultLayer, ';')
+         ELSE [it.defaultLayer]
+       END AS defaultLayerNames
+  
+  // Unwind to create individual layer connections
+  UNWIND defaultLayerNames AS layerName
+  
+  // Match the actual Layer node
+  MATCH (l:Layer {name: trim(layerName)})
+  
+  // Only process if relationship doesn't already exist
+  WHERE NOT exists((l)-[:IS_LAYER_OF]->(ci))
+  
+  RETURN l, ci, layerName
+  ",
+  "
+  // Create the IS_LAYER_OF relationship
+  CREATE (l)-[:IS_LAYER_OF ]->(ci)
+  
+  RETURN l.name + ' -> ' + ci.name + ' (default: ' + layerName + ')' as relation_created
+  ",
+  {
+    batchSize: 5000,
+    parallel: false,
+    concurrency: 3,
+    retries: 10
+  }
+);

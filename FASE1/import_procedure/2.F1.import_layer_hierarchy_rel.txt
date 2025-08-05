@@ -1,5 +1,5 @@
 // ========================================
-// FASE 3 - IMPORT GERARCHIA LAYER
+// FASE 1 - IMPORT GERARCHIA LAYER
 // ========================================
 
 CALL apoc.periodic.iterate(

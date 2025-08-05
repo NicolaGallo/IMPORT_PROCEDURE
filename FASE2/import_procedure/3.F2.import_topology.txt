@@ -1,0 +1,18 @@
+
+//F2 1. IMPORT TOPOLOGY
+CALL apoc.periodic.iterate(
+  "LOAD CSV WITH HEADERS FROM 'file:///topology.csv' AS row RETURN row",
+  "MERGE (t:Topology {name: row.name})
+   SET t.topology_id = toInteger(row.topology_id),
+       t.description = row.description,
+       t.createdAt = datetime(row.createdAt),
+       t.updatedAt = datetime(row.updatedAt),
+       t.createdBy = row.createdBy,
+       t.modifiedBy = row.modifiedBy",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);
