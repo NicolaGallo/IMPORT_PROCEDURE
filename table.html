@@ -1,10 +1,8 @@
-      
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MITO Topology - Phase Structure</title>
     <title>MITO Topology - Phase Structure</title>
     <style>
         body {
@@ -241,7 +239,6 @@
     <div class="container">
         <div class="header">
             <h1>MITO Topology INVENTORY Import</h1>
-           
         </div>
         
         <div class="table-wrapper">
@@ -254,7 +251,6 @@
                         <th>DEPENDENCIES</th>
                         <th>REQUIRED CSV</th>
                         <th>SCRIPTS</th>
-
                         <th>CRITICAL CONSTRAINTS</th>
                     </tr>
                 </thead>
@@ -290,26 +286,22 @@
                         <td class="description">
                             MITO base entities
                             <ul>
-                                
-                                <li>1.Layer</li>
-                                <li>2.ItemType</li>
-                                <li>3.Account</li>
-								<li>4.Layer hierarchy</li>
-                                <li>Layer ↔ Layer</li>
-								
+                                <li>Layer</li>
+                                <li>ItemType</li>
+                                <li>Account</li>
+                                <li>Layer hierarchy</li>
                             </ul>
                         </td>
                         <td class="dependencies"><strong>PHASE 0</strong></td>
                         <td class="csv-list">
-                           
                             <div>layer.csv</div>
                             <div>itemType.csv</div>
                             <div>account.csv</div>
-							<div>layer_hierarchy.csv</div>
+                            <div>layer_hierarchy.csv</div>
                         </td>
                         <td class="script-list">
                             <div>1.F1.import_basic.txt</div>
-							 <div>2.F1.import_layer_hierarchy_rel.txt</div>
+                            <div>2.F1.import_layer_hierarchy_rel.txt</div>
                         </td>
                         <td class="constraints">
                             Names must be unique
@@ -324,14 +316,14 @@
                             <ul>
                                 <li>Locations</li>
                                 <li>CiItems</li>
-								<li>Topology</li>
+                                <li>Topology</li>
                             </ul>
                         </td>
                         <td class="dependencies"><strong>PHASE 0 + 1</strong></td>
                         <td class="csv-list">
                             <div>locations.csv</div>
                             <div>ciItems.csv</div>
-							 <div>topology.csv</div>
+                            <div>topology.csv</div>
                         </td>
                         <td class="script-list">
                             <div>1.F2.import_location.txt</div>
@@ -350,22 +342,16 @@
                         <td class="description">
                             Base relationships
                             <ul>
-                                
-                                
-                                <li>Topology ↔ Items</li>
+                                <li>ItemType → Default Layers</li>
                                 <li>Location ↔ Items</li>
-                                <li>Layer ↔ Items</li>
                             </ul>
                         </td>
                         <td class="dependencies"><strong>PHASE 0 + 1 + 2</strong></td>
                         <td class="csv-list">
-                            
                             <div>layer_rel.csv</div>
-                            
                             <div>location_rel.csv</div>
                         </td>
                         <td class="script-list">
-                         
                             <div>1.F3.import_defaultLayer_rel.txt</div>
                             <div>2.F3.import_location_rel.txt</div>
                         </td>
@@ -382,16 +368,17 @@
                             Items relationships
                             <ul>
                                 <li>Item ↔ Item</li>
+                                <li>Topology ↔ Items</li>
                             </ul>
                         </td>
-                        <td class="dependencies"><strong>PHASE 0+ 1 + 2 </strong></td>
+                        <td class="dependencies"><strong>PHASE 0 + 1 + 2</strong></td>
                         <td class="csv-list">
                             <div>ciitem_rel.csv</div>
-							<div>topology_rel.csv</div>
+                            <div>topology_rel.csv</div>
                         </td>
                         <td class="script-list">
                             <div>1.F4.import_items_rel.txt</div>
-							<div>2.F4.import_topology_rel.txt</div>
+                            <div>2.F4.import_topology_rel.txt</div>
                         </td>
                         <td class="constraints">
                             CiItems source/target<br>

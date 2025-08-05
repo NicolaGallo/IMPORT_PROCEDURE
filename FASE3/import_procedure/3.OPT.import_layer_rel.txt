@@ -1,0 +1,23 @@
+// ========================================
+// OPZIONALE  IMPORT RELAZIONI PUNTUALI LAYER -> CIITEM 
+// ========================================
+
+CALL apoc.periodic.iterate(
+  "LOAD CSV WITH HEADERS FROM 'file:///layer_rel.csv' AS row RETURN row",
+  "
+  // Trova Layer e CiItem usando i NOMI
+  MATCH (l:Layer {name: row.layer_name})
+  MATCH (ci:CiItem {name: row.ciitem_name})
+  
+  // Crea relazione IS_LAYER_OF
+  MERGE (l)-[:IS_LAYER_OF]->(ci)
+  
+  RETURN l.name + ' -> ' + ci.name AS relation_created
+  ",
+  {
+    batchSize: 10000,
+    parallel: false,
+    concurrency: 5,
+    retries: 10
+  }
+);
