@@ -1,0 +1,21 @@
+operation,name,itemTypeName,status,accountName,importance,isLink,fromElement,toElement,latitude,longitude,layers,url,propKey_1,propVal_1,propKey_2,propVal_2
+A,GE_MIL_ROM_001,GE,Active,W3-B2B,100,Y,<nome_oggetto>,<nome_oggetto>,,,Ethernet,,bandwidth,1000Mbps,vlan,100
+A,GE_ROM_NAP_001,GE,Active,W3-B2B,100,Y,<nome_oggetto>,<nome_oggetto>,,,Ethernet,,bandwidth,1000Mbps,vlan,200
+A,SWRT_Milano_01,SWRT,Active,W3-B2B,100,N,,,,,,,,,,
+A,PEIP_MIL_TOR_001,PEIP,Active,W3-B2C,100,Y,<nome_oggetto>,<nome_oggetto>,,,Service Circuit,,bandwidth,100Mbps,vlan,300
+A,SWRT_Roma_01,SWRT,Active,W3-B2B,100,N,,,,,,,,,,
+A,SWRT_Torino_01,SWRT,Active,W3-B2C,100,N,,,,,,,,,,
+A,SWRT_Napoli_01,SWRT,Active,W3-B2B,100,N,,,,,,,,,,
+A,A,BTSGUL_Milano_01,BTSGUL,Active,W3-B2C,100,N,,,,,,,,,,
+A,GE_TOR_BOL_001,GE,Active,W3-B2C,100,Y,<nome_oggetto>,<nome_oggetto>,,,Ethernet,,bandwidth,1000Mbps,vlan,400
+A,SWRT_Bologna_01,SWRT,Active,W3-B2C,100,N,,,,,,,,,,
+A,PEIP_BOL_NAP_001,PEIP,Active,W3-B2B,100,Y,<nome_oggetto>,<nome_oggetto>,,,Service Circuit,,bandwidth,100Mbps,vlan,500
+A,BTSGUL_Roma_01,BTSGUL,Active,W3-B2B,100,N,,,,,,,,,,
+A,Router_Milano_01,Router,Active,W3-B2B,100,N,,,,,,,,,,
+A,Switch_Roma_01,Switch,Active,W3-B2B,100,N,,,,,,,,,,
+A,GE_MIL_BOL_001,GE,Active,W3-B2B,100,Y,<nome_oggetto>,<nome_oggetto>,,,Ethernet,,bandwidth,1000Mbps,vlan,600
+A,PEIP_ROM_TOR_001,PEIP,Active,W3-B2C,100,Y,<nome_oggetto>,<nome_oggetto>,,,Service Circuit,,bandwidth,100Mbps,vlan,700
+A,BTSGUL_Torino_01,BTSGUL,Active,W3-B2C,100,N,,,,,,,,,,
+A,Switch_Napoli_01,Switch,Active,W3-B2B,100,N,,,,,,,,,,
+A,Router_Bologna_01,Router,Active,W3-B2C,100,N,,,,,,,,,,
+A,BTSGUL_Bologna_01,BTSGUL,Active,W3-B2C,100,N,,,,,,,,,,

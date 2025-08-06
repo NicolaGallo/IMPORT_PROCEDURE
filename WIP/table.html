@@ -248,10 +248,9 @@
                         <th>PHASE</th>
                         <th>TYPE</th>
                         <th>DESCRIPTION</th>
-                        <th>DEPENDENCIES</th>
+                        <th>FREQUENCY</th>
                         <th>REQUIRED CSV</th>
-                        <th>SCRIPTS</th>
-                        <th>CRITICAL CONSTRAINTS</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -266,46 +265,35 @@
                             </ul>
                         </td>
                         <td class="dependencies">
-                            <span class="dependencies-none">NONE</span><br>
-                            <em>(First execution)</em>
+                            <span class="dependencies">MICROSERVICE SETUP</span><br>
+                            <em>(One Time execution)</em>
                         </td>
                         <td>None</td>
-                        <td class="script-list">
-                            <div>F0_SETUP.txt</div>
-                            <div>F0_B.spatial_layer_F0.txt</div>
-                        </td>
-                        <td class="constraints">
-                            <span class="warning">⚠️</span> <span class="mandatory">MANDATORY</span><br>
-                            Execute only once
-                        </td>
+                      
+                      
                     </tr>
                     
                     <tr class="phase-1">
                         <td class="phase-cell"><strong>PHASE 1</strong></td>
-                        <td><span class="type-import">Import Items</span></td>
+                        <td><span class="type-import">Import BASE Items</span></td>
                         <td class="description">
                             MITO base entities
                             <ul>
                                 <li>Layer</li>
                                 <li>ItemType</li>
-                                <li>Account</li>
+                            
                                 <li>Layer hierarchy</li>
                             </ul>
                         </td>
-                        <td class="dependencies"><strong>PHASE 0</strong></td>
+                        <td class="dependencies"><strong>One Time / On Demand</strong></td>
                         <td class="csv-list">
                             <div>layer.csv</div>
                             <div>itemType.csv</div>
-                            <div>account.csv</div>
+                          
                             <div>layer_hierarchy.csv</div>
                         </td>
-                        <td class="script-list">
-                            <div>1.F1.import_basic.txt</div>
-                            <div>2.F1.import_layer_hierarchy_rel.txt</div>
-                        </td>
-                        <td class="constraints">
-                            Names must be unique
-                        </td>
+                       
+                     
                     </tr>
                     
                     <tr class="phase-2">
@@ -319,72 +307,38 @@
                                 <li>Topology</li>
                             </ul>
                         </td>
-                        <td class="dependencies"><strong>PHASE 0 + 1</strong></td>
+                        <td class="dependencies"><strong>Daily</strong></td>
                         <td class="csv-list">
                             <div>locations.csv</div>
                             <div>ciItems.csv</div>
                             <div>topology.csv</div>
                         </td>
-                        <td class="script-list">
-                            <div>1.F2.import_location.txt</div>
-                            <div>2.F2.import_items.txt</div>
-                            <div>3.F2.import_topology.txt</div>
-                        </td>
-                        <td class="constraints">
-                            ItemType must exist<br>
-                            Account must exist
-                        </td>
+                      
+                        
                     </tr>
                     
                     <tr class="phase-3">
                         <td class="phase-cell"><strong>PHASE 3</strong></td>
                         <td><span class="type-relations">Import Relations</span></td>
                         <td class="description">
-                            Base relationships
+                             Relationships
                             <ul>
-                                <li>ItemType → Default Layers</li>
+                               <li>Item ↔ Item</li>
+                                <li>Topology ↔ Items</li>
                                 <li>Location ↔ Items</li>
                             </ul>
                         </td>
-                        <td class="dependencies"><strong>PHASE 0 + 1 + 2</strong></td>
-                        <td class="csv-list">
-                            <div>layer_rel.csv</div>
-                            <div>location_rel.csv</div>
-                        </td>
-                        <td class="script-list">
-                            <div>1.F3.import_defaultLayer_rel.txt</div>
-                            <div>2.F3.import_location_rel.txt</div>
-                        </td>
-                        <td class="constraints">
-                            All referenced names<br>
-                            must exist
-                        </td>
-                    </tr>
-                    
-                    <tr class="phase-4">
-                        <td class="phase-cell"><strong>PHASE 4</strong></td>
-                        <td><span class="type-relations">Import Relations</span></td>
-                        <td class="description">
-                            Items relationships
-                            <ul>
-                                <li>Item ↔ Item</li>
-                                <li>Topology ↔ Items</li>
-                            </ul>
-                        </td>
-                        <td class="dependencies"><strong>PHASE 0 + 1 + 2</strong></td>
+                        <td class="dependencies"><strong>Daily</strong></td>
                         <td class="csv-list">
                             <div>ciitem_rel.csv</div>
                             <div>topology_rel.csv</div>
+                            <div>location_rel.csv</div>
                         </td>
-                        <td class="script-list">
-                            <div>1.F4.import_items_rel.txt</div>
-                            <div>2.F4.import_topology_rel.txt</div>
-                        </td>
-                        <td class="constraints">
-                            CiItems source/target<br>
-                            must exist
-                        </td>
+                       
+                      
                     </tr>
+                    
+               
                 </tbody>
             </table>
         </div>

@@ -1,0 +1,16 @@
+source_name,target_name,relation
+GE_MIL_ROM_001,SWRT_Milano_01,terminated_at
+GE_MIL_ROM_001,SWRT_Roma_01,terminated_at
+GE_ROM_NAP_001,SWRT_Roma_01,terminated_at
+GE_ROM_NAP_001,SWRT_Napoli_01,terminated_at
+GE_TOR_BOL_001,SWRT_Torino_01,terminated_at
+GE_TOR_BOL_001,SWRT_Bologna_01,terminated_at
+GE_MIL_BOL_001,SWRT_Milano_01,terminated_at
+GE_MIL_BOL_001,SWRT_Bologna_01,terminated_at
+GE_MIL_ROM_001,PEIP_MIL_TOR_001,routed_on
+GE_ROM_NAP_001,PEIP_BOL_NAP_001,routed_on
+GE_TOR_BOL_001,PEIP_ROM_TOR_001,routed_on
+GE_MIL_BOL_001,PEIP_BOL_NAP_001,routed_on
+PEIP_MIL_TOR_001,GE_TOR_BOL_001,routed_on
+PEIP_BOL_NAP_001,GE_ROM_NAP_001,routed_on
+PEIP_ROM_TOR_001,GE_MIL_ROM_001,routed_on

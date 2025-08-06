@@ -11,9 +11,9 @@ CALL apoc.periodic.iterate(
   // Parse defaultLayers - handle both single and multi-value cases
   WITH ci, it,
        CASE 
-         WHEN it.defaultLayer CONTAINS ';' 
-         THEN split(it.defaultLayer, ';')
-         ELSE [it.defaultLayer]
+         WHEN it.defaultLayers CONTAINS ';' 
+         THEN split(it.defaultLayers, ';')
+         ELSE [it.defaultLayers]
        END AS defaultLayerNames
   
   // Unwind to create individual layer connections

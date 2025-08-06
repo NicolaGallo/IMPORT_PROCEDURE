@@ -1,0 +1,4 @@
+operation,name,mandatory
+A,Service Circuit,Y
+A,Ethernet,Y
+A,Physical,Y

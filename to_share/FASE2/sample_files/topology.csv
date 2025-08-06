@@ -1,0 +1,4 @@
+operation,name,description,propKey_1,propVal_1,propKey_2,propVal_2
+A,Core_Network,Core network topology for main infrastructure,w3_Topo_type,AREA10,TOPO_ZONE,NORD_EST
+A,Access_Network,Access network topology for customer connections,
+A,Transport_Network,Transport network topology for backbone,"

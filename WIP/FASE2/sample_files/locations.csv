@@ -1,0 +1,6 @@
+operation,name,latitude,longitude,country_name,state_name,city_name,address,postal_code
+A,Milano_Centro,45.4642,9.1900,,,,,,,
+A,Roma_EUR,41.8311,12.4686,,,,,,,
+A,Napoli_Centro,40.8518,14.2681,,,,,,,
+A,Torino_Centro,45.0703,7.6869,,,,,,,
+A,Bologna_Centro,44.4949,11.3426,,,,,,,

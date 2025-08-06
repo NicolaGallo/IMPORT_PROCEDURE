@@ -1,0 +1,3 @@
+parent_layer_name,child_layer_name
+Service Circuit,Ethernet
+Ethernet,Physical

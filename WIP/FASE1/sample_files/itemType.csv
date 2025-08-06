@@ -1,0 +1,7 @@
+operation,itemTypeName,defaultLayers
+A,GE,Ethernet
+A,PEIP,Service Circuit
+A,SWRT,Service Circuit;Ethernet;Physical
+A,BTSGUL,Service Circuit;Ethernet;Physical
+A,Router,Service Circuit;Ethernet;Physical
+A,Switch,Service Circuit;Ethernet;Physical

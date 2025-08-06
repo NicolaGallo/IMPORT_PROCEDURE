@@ -1,0 +1,7 @@
+itemTypeName,defaultLayer
+GE,Ethernet;Physical
+PEIP,Service Circuit
+SWRT,Physical
+BTSGUL,Physical;Ethernet
+Router,Physical;Ethernet
+Switch,Ethernet
